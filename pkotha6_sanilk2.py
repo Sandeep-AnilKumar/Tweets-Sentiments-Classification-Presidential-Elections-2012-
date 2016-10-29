@@ -47,27 +47,14 @@ for row in sheet['D3':end]:
 
 csv_file.close()
 
-def replaceTwoOrMore(s):
-    pattern = re.compile(r"(.)\1{1,}", re.DOTALL)
-    return pattern.sub(r"\1\1", s)
-
-
-def getFeatureVector(tweet):
-    featureVector = []
-    words = tweet.split()
-    for w in words:
-
-        featureVector.append(w.lower())
-    return featureVector
-
 tweets = []
-inpTweets = csv.reader(open('preprocessed.csv', 'rt'), delimiter=',', quotechar='|')
+inpTweets = csv.reader(open('preprocessed.csv', 'rt'), delimiter=',')
 i = 0
 for row in inpTweets:
     i += 1
     sentiment = row[1]
     tweet = row[0]
-    featureVector = getFeatureVector(tweet)
+    featureVector = [word.lower().strip() for word in tweet.split()]
     tweets.append((featureVector, sentiment))
     if i == 10:
         break
