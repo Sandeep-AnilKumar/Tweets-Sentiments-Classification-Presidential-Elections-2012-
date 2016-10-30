@@ -286,6 +286,7 @@ puts
 q
 quite
 r
+rt
 rather
 really
 right
