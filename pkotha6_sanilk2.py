@@ -12,6 +12,17 @@ def extract_features(tweet):
 tweets = []
 inpTweets = csv.reader(open('preprocessed.csv', 'rt'), delimiter=',')
 featureList = []
+confusion_matrix = {}
+confusion_matrix[0, 1] = 0
+confusion_matrix[0, 0] = 0
+confusion_matrix[0, -1] = 0
+confusion_matrix[1, 0] = 0
+confusion_matrix[1, 1] = 0
+confusion_matrix[1, -1] = 0
+confusion_matrix[-1, 0] = 0
+confusion_matrix[-1, 1] = 0
+confusion_matrix[-1, -1] = 0
+
 
 for row in inpTweets:
     sentiment = row[1]
@@ -23,7 +34,6 @@ for row in inpTweets:
 featureList = list(set(featureList))
 kf = KFold(n_splits=10)
 fold_number = 1
-# tweets = tweets[:1000]
 total_accuracy = 0
 for train, test in kf.split(tweets):
     # Training
@@ -42,6 +52,7 @@ for train, test in kf.split(tweets):
         print("######################################################")
         if str(actual_class) == str(classified_class):
             correct_count += 1
+        confusion_matrix[int(actual_class), int(classified_class)] += 1
     cur_fold_accuracy = correct_count / len(test)
     print("Accuracy for fold :", fold_number," -> ", cur_fold_accuracy)
     fold_number += 1
@@ -49,5 +60,6 @@ for train, test in kf.split(tweets):
     total_accuracy += cur_fold_accuracy
 
 print("Total Classifier accuracy :", total_accuracy / 10)
+print(confusion_matrix)
 
 
