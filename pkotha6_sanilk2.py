@@ -60,6 +60,8 @@ for train, test in kf.split(tweets):
     total_accuracy += cur_fold_accuracy
 
 print("Total Classifier accuracy :", total_accuracy / 10 * 100)
+print("Confusion Matrix")
+print(confusion_matrix)
 
 print("Precision for positive class:", end='')
 precision = confusion_matrix[1, 1] / (confusion_matrix[1, 1] + confusion_matrix[0, 1] + confusion_matrix[-1, 1])

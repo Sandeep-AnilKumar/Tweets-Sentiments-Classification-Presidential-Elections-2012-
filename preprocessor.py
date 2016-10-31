@@ -3,7 +3,7 @@ import csv
 import re
 
 workbook = px.load_workbook('training-Obama-Romney-tweets.xlsx')
-sheet = workbook.get_sheet_by_name(name='Obama')
+sheet = workbook.get_sheet_by_name(name='Romney')
 
 max_row = sheet.max_row
 
