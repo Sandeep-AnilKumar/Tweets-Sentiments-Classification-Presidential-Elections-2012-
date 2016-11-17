@@ -10,6 +10,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier
 from sklearn import linear_model
 from sklearn import svm
+import time
 
 def extract_features(tweet):
     tweet_words = set(tweet)
@@ -43,10 +44,8 @@ for row in inpTweets:
     featureVector = [word.lower().strip() for word in tweet.split()]
     featureList.extend(featureVector)
     tweets.append((featureVector, sentiment))
-    if(i==1000):
-        break
-
-
+    # if(i==1000):
+    #     break
 
 featureList = list(set(featureList))
 kf = KFold(n_splits=10)
@@ -54,6 +53,7 @@ fold_number = 1
 total_accuracy = 0
 for train, test in kf.split(tweets):
     # Training
+    start_time = time.time()
     nb_correct_count = 0
     svm_correct_count = 0
     knn_correct_count = 0
@@ -69,7 +69,7 @@ for train, test in kf.split(tweets):
     train_labels = [tweets[t][1] for t in train]
     test_labels = [tweets[t][1] for t in test]
 
-    tfidf_transformer = TfidfVectorizer(min_df=1)
+    tfidf_transformer = TfidfVectorizer()
     train_tfidf_vector = tfidf_transformer.fit_transform(training_tweets_text)
 
     predictions = []
@@ -99,9 +99,9 @@ for train, test in kf.split(tweets):
     predictions.append(logregPredict)
 
     #multilayer perceptron
-    mlp = MLPClassifier(activation='tanh',learning_rate_init=0.01,  max_iter=10000, solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(200, 50, 10), random_state=1)
-    mlp.fit(train_tfidf_vector, train_labels)
-    mlpregPredict = mlp.predict(X_new_tfidf)
+    # mlp = MLPClassifier(activation='tanh',learning_rate_init=0.01,  max_iter=10000, solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(200, 50, 10), random_state=1)
+    # mlp.fit(train_tfidf_vector, train_labels)
+    # mlpregPredict = mlp.predict(X_new_tfidf)
 
     #Naive Bayes
     training_set = nltk.classify.util.apply_features(extract_features, training_tweets)
@@ -110,25 +110,26 @@ for train, test in kf.split(tweets):
     print("in some fold, training")
     # Testing
     index = -1
+    debug = False
     for t in test:
         index += 1
         tweet_test = tweets[t][0]
         actual_class = tweets[t][1]
         nbPredict = NBClassifier.classify(extract_features(tweet_test))
-        # #print("Tweet : ", tweet_test)
-        # print("Actual class : ", actual_class)
-        # print("Classified class : ", nbPredict)
-        # print("svm prediction: ", svmPredict[index])
-        # print("sgdc prediction: ", sgdcPredict[index])
-        # print("knn prediction: ", knnPredict[index])
-        # print("log regression prediction: ", logregPredict[index])
-
-        print("######################################################")
         #taking voting#
         predictedLabels = [nbPredict, svmPredict[index], sgdcPredict[index], knnPredict[index], logregPredict[index]]
         votedLabel =  max(set(predictedLabels), key=predictedLabels.count)
-        print("voted prediction: ", votedLabel)
-        ######################################################
+
+        if (debug):
+            # print("Tweet : ", tweet_test)
+            print("Actual class : ", actual_class)
+            print("Classified class : ", nbPredict)
+            print("svm prediction: ", svmPredict[index])
+            print("sgdc prediction: ", sgdcPredict[index])
+            print("knn prediction: ", knnPredict[index])
+            print("log regression prediction: ", logregPredict[index])
+            print("voted prediction: ", votedLabel)
+            print("######################################################")
 
         if str(actual_class) == str(votedLabel):
             voted_correct_count += 1
@@ -148,12 +149,12 @@ for train, test in kf.split(tweets):
         if str(actual_class) == str(nbPredict):
             nb_correct_count += 1
 
-        if str(actual_class) == str(mlpregPredict[index]):
-            mlp_correct_count += 1
+        # if str(actual_class) == str(mlpregPredict[index]):
+        #     mlp_correct_count += 1
 
 
-        #confusion_matrix[int(actual_class), int(nbPredict)] += 1
-
+        confusion_matrix[int(actual_class), int(votedLabel)] += 1
+    print ("elapsed time :", (time.time() - start_time)/60)
     nb_cur_fold_accuracy      = nb_correct_count / len(test)
     svm_cur_fold_accuracy  = svm_correct_count / len(test)
     sgdc_cur_fold_accuracy = sgdc_correct_count / len(test)
@@ -171,7 +172,7 @@ for train, test in kf.split(tweets):
     print("neural Accuracy for fold :", fold_number, " -> ", mlp_cur_fold_accuracy)
     fold_number += 1
     print("######################################################")
-    total_accuracy += mlp_cur_fold_accuracy
+    total_accuracy += voted_cur_fold_accuracy
 
 print("Total Classifier accuracy :", total_accuracy / 10 * 100)
 
@@ -216,4 +217,4 @@ def printMetrics():
     F_score = (2 * precision * recall) / (precision + recall)
     print(F_score)
 
-
+printMetrics()
