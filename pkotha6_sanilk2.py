@@ -151,17 +151,16 @@ for train, test in kf.split(tweets):
 
         # if str(actual_class) == str(mlpregPredict[index]):
         #     mlp_correct_count += 1
-
-
         confusion_matrix[int(actual_class), int(votedLabel)] += 1
+
     print ("elapsed time :", (time.time() - start_time)/60)
-    nb_cur_fold_accuracy      = nb_correct_count / len(test)
-    svm_cur_fold_accuracy  = svm_correct_count / len(test)
+    nb_cur_fold_accuracy = nb_correct_count / len(test)
+    svm_cur_fold_accuracy = svm_correct_count / len(test)
     sgdc_cur_fold_accuracy = sgdc_correct_count / len(test)
-    knn_cur_fold_accuracy  = knn_correct_count / len(test)
+    knn_cur_fold_accuracy = knn_correct_count / len(test)
     logreg_cur_fold_accuracy = logreg_correct_count / len(test)
     voted_cur_fold_accuracy = voted_correct_count / len(test)
-    mlp_cur_fold_accuracy = mlp_correct_count / len(test)
+    #mlp_cur_fold_accuracy = mlp_correct_count / len(test)
 
     print("naive bayes Accuracy for fold :", fold_number," -> ", nb_cur_fold_accuracy, )
     print("svm Accuracy for fold :", fold_number, " -> ", svm_cur_fold_accuracy)
@@ -169,7 +168,7 @@ for train, test in kf.split(tweets):
     print("knn Accuracy for fold :", fold_number, " -> ", knn_cur_fold_accuracy)
     print("logreg Accuracy for fold :", fold_number, " -> ", logreg_cur_fold_accuracy)
     print("voted Accuracy for fold :", fold_number, " -> ", voted_cur_fold_accuracy)
-    print("neural Accuracy for fold :", fold_number, " -> ", mlp_cur_fold_accuracy)
+    #print("neural Accuracy for fold :", fold_number, " -> ", mlp_cur_fold_accuracy)
     fold_number += 1
     print("######################################################")
     total_accuracy += voted_cur_fold_accuracy
