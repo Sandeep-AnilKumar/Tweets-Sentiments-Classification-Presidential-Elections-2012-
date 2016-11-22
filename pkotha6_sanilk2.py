@@ -10,6 +10,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier
 from sklearn import linear_model
 from sklearn import svm
+from sklearn.utils import shuffle
 import time
 
 def extract_features(tweet):
@@ -33,11 +34,22 @@ confusion_matrix[-1, 0] = 0
 confusion_matrix[-1, 1] = 0
 confusion_matrix[-1, -1] = 0
 tweetsText = []
+unshuffledTweets = []
+
+for row in inpTweets:
+    unshuffledTweets.append(row)
+
+#print("Before shuffling", unshuffledTweets[:10])
+
+unshuffledTweets = shuffle(unshuffledTweets, random_state=0)
+
+#print("After shuffling", unshuffledTweets[:10])
 
 i = 0
+
 tweetsText = []
-for row in inpTweets:
-    i+=1
+for row in unshuffledTweets:
+    #i += 1
     sentiment = row[1]
     tweet = row[0]
     tweetsText.append(tweet)
