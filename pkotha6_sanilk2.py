@@ -48,8 +48,11 @@ unshuffledTweets = shuffle(unshuffledTweets, random_state=0)
 i = 0
 
 tweetsText = []
+
+classifier_accuracies = [0, 0, 0, 0, 0]
+i=0
 for row in unshuffledTweets:
-    #i += 1
+    i += 1
     sentiment = row[1]
     tweet = row[0]
     tweetsText.append(tweet)
@@ -85,7 +88,7 @@ for train, test in kf.split(tweets):
     train_tfidf_vector = tfidf_transformer.fit_transform(training_tweets_text)
 
     predictions = []
-    clf = svm.SVC(kernel='linear')
+    clf = svm.SVC(kernel='linear', C=1.1, gamma=1.1)
     clf.fit(train_tfidf_vector, train_labels)
     X_new_tfidf = tfidf_transformer.transform(test_tweets_text)
     svmPredict = clf.predict(X_new_tfidf)
@@ -167,10 +170,21 @@ for train, test in kf.split(tweets):
 
     print ("elapsed time :", (time.time() - start_time)/60)
     nb_cur_fold_accuracy = nb_correct_count / len(test)
+    classifier_accuracies[0] += nb_correct_count / len(test)
+
     svm_cur_fold_accuracy = svm_correct_count / len(test)
+    classifier_accuracies[1] += svm_correct_count / len(test)
+
     sgdc_cur_fold_accuracy = sgdc_correct_count / len(test)
+    classifier_accuracies[2] += sgdc_correct_count / len(test)
+
     knn_cur_fold_accuracy = knn_correct_count / len(test)
+    classifier_accuracies[3] += knn_correct_count / len(test)
+
     logreg_cur_fold_accuracy = logreg_correct_count / len(test)
+    classifier_accuracies[4] += logreg_correct_count / len(test)
+
+
     voted_cur_fold_accuracy = voted_correct_count / len(test)
     #mlp_cur_fold_accuracy = mlp_correct_count / len(test)
 
@@ -187,8 +201,15 @@ for train, test in kf.split(tweets):
 
 print("Total Classifier accuracy :", total_accuracy / 10 * 100)
 
+classifiers = ["nb", "svm", "sgd", "knn", "log"]
+for classifier_accuracy in classifier_accuracies:
+    print(classifier_accuracy)
+
+for classifier, classifier_accuracy in zip(classifiers, classifier_accuracies):
+    print("accuracy for ", classifier, " is -> ", classifier_accuracy/10)
+
+
 def printMetrics():
-    print("Total Classifier accuracy :", total_accuracy / 10 * 100)
     print("Confusion Matrix")
     print(confusion_matrix)
 
