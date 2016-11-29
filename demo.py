@@ -64,9 +64,12 @@ def training_and_testing(candidate):
     print(confusion_metrics)
     print("Total accuracy for", candidate, "is", voting_accuracy * 100, "%")
 
-    print("Precision score for LR for Testing Data", metrics.precision_score(test_labels, voting_prediction, average=None))
-    print("Recall score for LR for Testing Data", metrics.recall_score(test_labels, voting_prediction, average=None))
-    print("F1 score for LR for Testing Data", metrics.f1_score(test_labels, voting_prediction, average=None))
+    precisions = metrics.precision_score(test_labels, voting_prediction, average=None)
+    recalls = metrics.recall_score(test_labels, voting_prediction, average=None)
+    f1scores = metrics.f1_score(test_labels, voting_prediction, average=None)
+    print("Precision for negative class ", precisions[0], " positive class ", precisions[2])
+    print("Recall for negative class ", recalls[0], " positive class ", recalls[2]  )
+    print("F1 or negative class ", f1scores[0], " positive class ", f1scores[2]  )
     print("finish\n-----------------------------\n\n")
 
 training_and_testing('Obama')
