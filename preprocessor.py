@@ -49,7 +49,7 @@ def workbookDef(workbookName, sheetName, outputFile):
     else :
         starting_cell = 'A3'
     for row in sheet[starting_cell:end]:
-        if row[1].value in [1, -1, 0]:
+        if row[4].value in [1, -1, 0]:
             preprocessed_tweet = preprocess(str(row[0].value))
             if preprocessed_tweet.strip():
                 tweets = [preprocessed_tweet, row[4].value]
@@ -59,9 +59,9 @@ def workbookDef(workbookName, sheetName, outputFile):
 
 
 
-workbookDef(training_workbook, candidate1, candidate1 + '_training.csv')
+#workbookDef(training_workbook, candidate1, candidate1 + '_training.csv')
 workbookDef(testing_workbook, candidate1, candidate1 + '_testing.csv')
-workbookDef(training_workbook, candidate2, candidate2 + '_training.csv')
+#workbookDef(training_workbook, candidate2, candidate2 + '_training.csv')
 workbookDef(testing_workbook, candidate2, candidate2 + '_testing.csv')
 
 
