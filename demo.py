@@ -77,7 +77,7 @@ for train, test in kf.split(tweets):
     #Naive Bayes
     nb_clf = BernoulliNB(alpha=.01)
 
-    voting_clf = VotingClassifier(estimators=[('lr', lr_clf), ('nb', nb_clf), ('svm', svm_clf), ('sgd', sgd_clf), ('knn', knn_clf)], voting='soft')
+    voting_clf = VotingClassifier(estimators=[('lr', lr_clf), ('nb', nb_clf), ('svm', svm_clf), ('sgd', sgd_clf), ('knn', knn_clf)], voting='hard')
     voting_clf = voting_clf.fit(train_tfidf_vector, train_labels)
     voting_prediction = voting_clf.predict(X_new_tfidf)
 
