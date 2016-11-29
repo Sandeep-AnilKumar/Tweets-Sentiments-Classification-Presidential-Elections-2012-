@@ -47,12 +47,12 @@ def workbookDef(workbookName, sheetName, outputFile):
     if(outputFile.endswith('training.csv')):
         starting_cell = 'D3'
     else :
-        starting_cell = 'A1'
+        starting_cell = 'A3'
     for row in sheet[starting_cell:end]:
         if row[1].value in [1, -1, 0]:
             preprocessed_tweet = preprocess(str(row[0].value))
             if preprocessed_tweet.strip():
-                tweets = [preprocessed_tweet, row[1].value]
+                tweets = [preprocessed_tweet, row[4].value]
                 wr.writerow(tweets)
 
     csv_file.close()
