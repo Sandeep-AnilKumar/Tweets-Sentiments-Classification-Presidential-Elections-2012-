@@ -9,9 +9,21 @@ training_workbook = 'training-Obama-Romney-tweets.xlsx'
 testing_workbook = 'testing-Obama-Romney-tweets.xlsx'
 stemmer = PorterStemmer()
 
+#Reading stopwords from the file.
 stopWords = []
 with open('StopWords.txt') as stop_file:
     stopWords = [word for word in stop_file]
+
+#Preprocessing steps:
+# I am replacing @user_mentions with ATUSER.
+# replaced https or other forms of URL's to 'URL'.
+# removed punctuations and stopwords.
+# replaced #hashtags with only the word.
+# retained only words starting with alphabets.
+# performed stemming using porter stemmer from nltk.
+# replaced words having more than 2 repetitions of letters, e.g. happppyyy to 'happyy'.
+# converted all tweets to lowercase.
+# Multiple spaces are removed and spaces at end and beginning of tweet are removed.
 
 def preprocess(cur_tweet):
     cur_tweet = cur_tweet.lower().strip()
@@ -56,7 +68,6 @@ def workbookDef(workbookName, sheetName, outputFile):
                 wr.writerow(tweets)
 
     csv_file.close()
-
 
 
 #workbookDef(training_workbook, candidate1, candidate1 + '_training.csv')
